@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo_APP</title>
+</head>
+<body>
+    <input type="text" placeholder="Task" id="task">
+    <button onclick="addtask()">Add</button>
+    <div id="container"></div>
+</body>
+</html>
+
+<script>
+
+let url="http://localhost:3000/api"
+
+window.addEventListener("load",()=>{
+    getdata();
+})
+
+let getdata= async ()=>{
+    let res=await fetch(`${url}/todo`)
+    res=await res.json();
+    rendorDom(res)
+    console.log(res)
+}
+
+let rendorDom=(data)=>{
+    let container=document.getElementById("container")
+    container.innerHTML=null;
+    data.forEach(({id,title,status})=>{
+        let h3=document.createElement("h3")
+        h3.innerText=title;
+        let p=document.createElement("p")
+        p.innerText=id;
+        let p1=document.createElement("p")
+        p1.innerText=status;
+        let dlt=document.createElement("button")
+        dlt.innerText="delete"
+        dlt.onclick=()=>{
+            Delete(id);
+        }
+        let toggle_btn=document.createElement("button")
+        toggle_btn.innerText="status"
+        toggle_btn.onclick=()=>{
+            toggle(id);
+        }
+        let div=document.createElement("div")
+        div.append(h3,p,p1,dlt,toggle_btn);
+        container.append(div);
+    })
+}
+
+let addtask= async ()=>{
+    let todo=document.getElementById("task").value;
+
+    let todo_data={
+        title:todo,
+        id:Date.now() + todo,
+        status: false,
+    }
+
+    let res= await fetch(`${url}/todo`,{
+        method:"POST",
+        body:JSON.stringify(todo_data),
+        headers:{"content-Type":"application/json"}
+    })
+}
+
+let Delete= async (id)=>{
+    let res=await fetch(`${url}/todo/${id}`,{
+        method:"DELETE",
+    })
+    getdata()
+}
+
+let toggle= async (id)=>{
+    let todo= await fetch(`${url}/todo`)
+
+    todo=await todo.json();
+    
+    let todo_status= {status: !todo.status};
+
+    let res= await fetch(`${url}/todo/${id}`,{
+        method:"PATCH",
+        body:JSON.stringify(todo_status),
+        headers:{
+          "content-Type":"application/json"
+        }
+    })
+
+    getdata();
+}
+
+
+</script>
