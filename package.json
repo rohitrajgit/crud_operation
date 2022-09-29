@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/rohitrajgit/crud_operation#readme",
   "dependencies": {
+    "heroku": "^7.63.4",
     "json-server": "^0.17.0"
   }
 }
